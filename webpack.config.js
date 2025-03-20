@@ -32,9 +32,9 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx']
   },
-  devServer: {
-    static: path.join(__dirname, 'dist'),
+devServer: {
+    static: path.join(__dirname, 'build'),
     compress: true,
     port: 3000
-  }
+}
 };
