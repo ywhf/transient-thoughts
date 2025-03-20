@@ -1,35 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 
+// 暂时用基础HTML元素替代
 const TransientThoughtsPlatform = () => {
   const [thoughts, setThoughts] = useState([]);
   const [newThought, setNewThought] = useState('');
   const [author, setAuthor] = useState('');
 
   useEffect(() => {
-    // 从localStorage加载已存储的想法
     const storedThoughts = JSON.parse(localStorage.getItem('transientThoughts') || '[]');
     setThoughts(storedThoughts);
   }, []);
 
   const saveThought = () => {
     if (newThought.trim() === '') return;
-
     const thoughtEntry = {
       id: Date.now(),
       content: newThought,
       author: author || '匿名游客',
       timestamp: new Date().toISOString()
     };
-
-    const updatedThoughts = [thoughtEntry, ...thoughts].slice(0, 100); // 限制最大数量
+    const updatedThoughts = [thoughtEntry, ...thoughts].slice(0, 100);
     
     setThoughts(updatedThoughts);
     localStorage.setItem('transientThoughts', JSON.stringify(updatedThoughts));
     
-    // 清空输入
     setNewThought('');
     setAuthor('');
   };
@@ -41,60 +35,63 @@ const TransientThoughtsPlatform = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-gray-50 min-h-screen">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">
+    <div style={{maxWidth: '42rem', margin: 'auto', padding: '1.5rem', backgroundColor: '#f9fafb', minHeight: '100vh'}}>
+      <div style={{textAlign: 'center', marginBottom: '2rem'}}>
+        <h1 style={{fontSize: '1.875rem', fontWeight: 'bold', color: '#1f2937'}}>
           游客的痕迹 | Transient Thoughts
         </h1>
-        <p className="text-gray-600 mt-2">
+        <p style={{color: '#6b7280', marginTop: '0.5rem'}}>
           在这里，每个想法都是一次存在的见证
         </p>
       </div>
-
-      <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-        <div className="mb-4">
-          <Input 
+      <div style={{backgroundColor: 'white', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', borderRadius: '0.5rem', padding: '1.5rem', marginBottom: '1.5rem'}}>
+        <div style={{marginBottom: '1rem'}}>
+          <input 
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
             placeholder="你的名字（可选）"
-            className="mb-2"
+            style={{width: '100%', padding: '0.5rem', marginBottom: '0.5rem', border: '1px solid #d1d5db', borderRadius: '0.25rem'}}
           />
-          <Textarea 
+          <textarea 
             value={newThought}
             onChange={(e) => setNewThought(e.target.value)}
             placeholder="记录下你此刻的想法..."
-            className="min-h-[100px]"
+            style={{width: '100%', minHeight: '100px', padding: '0.5rem', border: '1px solid #d1d5db', borderRadius: '0.25rem'}}
           />
         </div>
-        <div className="flex justify-end">
-          <Button 
+        <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+          <button 
             onClick={saveThought}
-            className="bg-blue-500 hover:bg-blue-600 text-white"
+            style={{backgroundColor: '#3b82f6', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.25rem', border: 'none', cursor: 'pointer'}}
           >
             保存想法
-          </Button>
+          </button>
         </div>
       </div>
-
-      <div className="space-y-4">
+      <div>
         {thoughts.map((thought) => (
           <div 
             key={thought.id} 
-            className="bg-white shadow-sm rounded-lg p-4 relative group"
+            style={{backgroundColor: 'white', boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)', borderRadius: '0.5rem', padding: '1rem', marginBottom: '1rem', position: 'relative'}}
           >
-            <p className="text-gray-800">{thought.content}</p>
-            <div className="mt-2 text-sm text-gray-500 flex justify-between items-center">
+            <p style={{color: '#1f2937'}}>{thought.content}</p>
+            <div style={{marginTop: '0.5rem', fontSize: '0.875rem', color: '#6b7280', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
               <span>
                 - {thought.author} | {new Date(thought.timestamp).toLocaleString()}
               </span>
-              <Button 
-                variant="ghost" 
-                size="sm"
+              <button 
                 onClick={() => deleteThought(thought.id)}
-                className="opacity-0 group-hover:opacity-100 transition-opacity text-red-500"
+                style={{
+                  background: 'none', 
+                  border: 'none', 
+                  color: '#ef4444', 
+                  cursor: 'pointer',
+                  opacity: 0,
+                  transition: 'opacity 0.2s'
+                }}
               >
                 删除
-              </Button>
+              </button>
             </div>
           </div>
         ))}
@@ -104,3 +101,14 @@ const TransientThoughtsPlatform = () => {
 };
 
 export default TransientThoughtsPlatform;
+
+import ReactDOM from 'react-dom/client';
+
+// 现有的 TransientThoughtsPlatform 组件...
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <TransientThoughtsPlatform />
+  </React.StrictMode>
+);
